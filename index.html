@@ -1,0 +1,1439 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Business Infrastructure Master Checklist</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=Noto+Sans+Bengali:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0c0f;
+    --bg2: #111418;
+    --bg3: #181d24;
+    --card: #13181f;
+    --border: #1e2730;
+    --border2: #2a3340;
+    --accent: #f59e0b;
+    --accent2: #fbbf24;
+    --accent3: #d97706;
+    --green: #10b981;
+    --green2: #34d399;
+    --red: #ef4444;
+    --blue: #3b82f6;
+    --purple: #8b5cf6;
+    --text: #e2e8f0;
+    --text2: #94a3b8;
+    --text3: #64748b;
+    --glow: rgba(245,158,11,0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Noise texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* ─── HEADER ─── */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,12,15,0.92);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 clamp(1rem, 5vw, 3rem);
+  }
+
+  .header-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    gap: 1rem;
+  }
+
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+  }
+
+  .logo-icon {
+    width: 32px; height: 32px;
+    background: var(--accent);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+  }
+
+  .header-stats {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+  }
+
+  .hstat {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+  }
+
+  .hstat-val {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    line-height: 1;
+  }
+
+  .hstat-val.green { color: var(--green2); }
+  .hstat-val.amber { color: var(--accent2); }
+  .hstat-val.blue { color: #60a5fa; }
+
+  .hstat-label {
+    font-size: 0.6rem;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .hstat-divider {
+    width: 1px; height: 32px;
+    background: var(--border2);
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    padding: 3rem clamp(1rem, 5vw, 3rem) 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(245,158,11,0.1);
+    border: 1px solid rgba(245,158,11,0.3);
+    border-radius: 100px;
+    padding: 0.3rem 0.8rem;
+    font-size: 0.7rem;
+    color: var(--accent2);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.5rem;
+  }
+
+  .hero h1 span { color: var(--accent); }
+
+  .hero-sub {
+    color: var(--text2);
+    font-size: 0.875rem;
+    line-height: 1.7;
+    max-width: 600px;
+    margin-bottom: 2rem;
+    font-family: 'Noto Sans Bengali', sans-serif;
+  }
+
+  /* ─── PROGRESS CARD ─── */
+  .progress-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.5rem 2rem;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .progress-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent3), var(--accent2), var(--green));
+  }
+
+  .progress-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .progress-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--text);
+  }
+
+  .progress-pct {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 2.5rem;
+    color: var(--accent2);
+    line-height: 1;
+  }
+
+  .progress-pct span {
+    font-size: 1rem;
+    color: var(--text3);
+    font-weight: 400;
+  }
+
+  .progress-bar-track {
+    height: 10px;
+    background: var(--bg3);
+    border-radius: 100px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent3), var(--accent2));
+    border-radius: 100px;
+    transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+    position: relative;
+  }
+
+  .progress-bar-fill::after {
+    content: '';
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    width: 20px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 100px;
+    animation: shimmer 1.5s infinite;
+  }
+
+  @keyframes shimmer {
+    0%,100% { opacity: 0; }
+    50% { opacity: 1; }
+  }
+
+  .progress-counts {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .pcount {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.75rem;
+    color: var(--text2);
+  }
+
+  .pcount-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+  }
+
+  .pcount-dot.green { background: var(--green2); }
+  .pcount-dot.amber { background: var(--accent2); }
+  .pcount-dot.total { background: var(--text3); }
+
+  .pcount strong { color: var(--text); }
+
+  /* ─── CONTROLS ─── */
+  .controls {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .filter-btn {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text2);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.05em;
+  }
+
+  .filter-btn:hover { border-color: var(--border2); color: var(--text); }
+
+  .filter-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #000;
+    font-weight: 500;
+  }
+
+  .controls-right {
+    margin-left: auto;
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .btn-action {
+    background: transparent;
+    border: 1px solid var(--border2);
+    color: var(--text2);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.05em;
+  }
+
+  .btn-action:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-action.danger:hover { border-color: var(--red); color: var(--red); }
+
+  /* ─── SECTIONS GRID ─── */
+  .sections-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 1.25rem;
+    position: relative;
+    z-index: 1;
+    padding-bottom: 4rem;
+  }
+
+  /* ─── SECTION CARD ─── */
+  .section-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: fadeUp 0.4s both;
+  }
+
+  .section-card:hover {
+    border-color: var(--border2);
+    box-shadow: 0 0 0 1px var(--border2), 0 8px 32px rgba(0,0,0,0.4);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-header {
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+  }
+
+  .section-number {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.4rem;
+    line-height: 1;
+    min-width: 2rem;
+  }
+
+  .section-info { flex: 1; }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--text);
+    letter-spacing: 0.02em;
+    margin-bottom: 0.2rem;
+  }
+
+  .section-progress-mini {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .mini-bar {
+    flex: 1;
+    height: 4px;
+    background: var(--bg3);
+    border-radius: 100px;
+    overflow: hidden;
+    max-width: 120px;
+  }
+
+  .mini-bar-fill {
+    height: 100%;
+    border-radius: 100px;
+    transition: width 0.4s ease;
+  }
+
+  .section-count-badge {
+    font-size: 0.65rem;
+    color: var(--text3);
+    white-space: nowrap;
+  }
+
+  .section-toggle {
+    color: var(--text3);
+    font-size: 0.7rem;
+    transition: transform 0.3s;
+  }
+
+  .section-card.collapsed .section-toggle { transform: rotate(-90deg); }
+
+  /* Sub-section header */
+  .sub-section-header {
+    padding: 0.6rem 1.25rem 0.3rem;
+    font-size: 0.65rem;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 500;
+    border-top: 1px solid var(--border);
+    margin-top: 0.25rem;
+  }
+
+  .sub-section-header:first-child { border-top: none; margin-top: 0; }
+
+  /* ─── ITEM LIST ─── */
+  .item-list {
+    padding: 0.5rem 0;
+  }
+
+  .section-card.collapsed .item-list { display: none; }
+
+  .item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.55rem 1.25rem;
+    cursor: pointer;
+    transition: background 0.15s;
+    position: relative;
+  }
+
+  .item:hover { background: rgba(255,255,255,0.03); }
+
+  .item.hidden { display: none; }
+
+  .item-check {
+    width: 18px; height: 18px;
+    border: 1.5px solid var(--border2);
+    border-radius: 5px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+    background: transparent;
+  }
+
+  .item.completed .item-check {
+    background: var(--green);
+    border-color: var(--green);
+  }
+
+  .item-check svg {
+    opacity: 0;
+    transform: scale(0.5);
+    transition: all 0.2s;
+  }
+
+  .item.completed .item-check svg {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .item-label {
+    font-size: 0.78rem;
+    color: var(--text2);
+    transition: all 0.2s;
+    flex: 1;
+    line-height: 1.4;
+  }
+
+  .item.completed .item-label {
+    color: var(--text3);
+    text-decoration: line-through;
+    text-decoration-color: var(--border2);
+  }
+
+  .item-badge {
+    font-size: 0.6rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 100px;
+    font-weight: 500;
+    flex-shrink: 0;
+    letter-spacing: 0.05em;
+  }
+
+  .item.completed .item-badge {
+    background: rgba(16,185,129,0.15);
+    color: var(--green2);
+    border: 1px solid rgba(16,185,129,0.3);
+  }
+
+  .item:not(.completed) .item-badge {
+    background: rgba(245,158,11,0.1);
+    color: var(--accent);
+    border: 1px solid rgba(245,158,11,0.2);
+  }
+
+  /* Category colors */
+  .cat-1 .section-number, .cat-1 .mini-bar-fill { color: #f59e0b; background: #f59e0b; }
+  .cat-2 .section-number, .cat-2 .mini-bar-fill { color: #3b82f6; background: #3b82f6; }
+  .cat-3 .section-number, .cat-3 .mini-bar-fill { color: #8b5cf6; background: #8b5cf6; }
+  .cat-4 .section-number, .cat-4 .mini-bar-fill { color: #10b981; background: #10b981; }
+  .cat-5 .section-number, .cat-5 .mini-bar-fill { color: #f43f5e; background: #f43f5e; }
+  .cat-6 .section-number, .cat-6 .mini-bar-fill { color: #06b6d4; background: #06b6d4; }
+  .cat-7 .section-number, .cat-7 .mini-bar-fill { color: #f97316; background: #f97316; }
+  .cat-8 .section-number, .cat-8 .mini-bar-fill { color: #a855f7; background: #a855f7; }
+  .cat-9 .section-number, .cat-9 .mini-bar-fill { color: #ec4899; background: #ec4899; }
+  .cat-10 .section-number, .cat-10 .mini-bar-fill { color: #14b8a6; background: #14b8a6; }
+  .cat-11 .section-number, .cat-11 .mini-bar-fill { color: #84cc16; background: #84cc16; }
+  .cat-12 .section-number, .cat-12 .mini-bar-fill { color: #ef4444; background: #ef4444; }
+  .cat-13 .section-number, .cat-13 .mini-bar-fill { color: #6366f1; background: #6366f1; }
+  .cat-14 .section-number, .cat-14 .mini-bar-fill { color: #0ea5e9; background: #0ea5e9; }
+  .cat-15 .section-number, .cat-15 .mini-bar-fill { color: #d946ef; background: #d946ef; }
+  .cat-16 .section-number, .cat-16 .mini-bar-fill { color: #fb923c; background: #fb923c; }
+  .cat-17 .section-number, .cat-17 .mini-bar-fill { color: #22d3ee; background: #22d3ee; }
+  .cat-18 .section-number, .cat-18 .mini-bar-fill { color: #a3e635; background: #a3e635; }
+  .cat-19 .section-number, .cat-19 .mini-bar-fill { color: #f472b6; background: #f472b6; }
+  .cat-20 .section-number, .cat-20 .mini-bar-fill { color: #38bdf8; background: #38bdf8; }
+  .cat-21 .section-number, .cat-21 .mini-bar-fill { color: #fb7185; background: #fb7185; }
+  .cat-22 .section-number, .cat-22 .mini-bar-fill { color: #4ade80; background: #4ade80; }
+  .cat-23 .section-number, .cat-23 .mini-bar-fill { color: #fde68a; background: #fde68a; }
+  .cat-24 .section-number, .cat-24 .mini-bar-fill { color: #c084fc; background: #c084fc; }
+
+  /* ─── TOAST ─── */
+  .toast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: var(--card);
+    border: 1px solid var(--border2);
+    border-radius: 10px;
+    padding: 0.75rem 1.25rem;
+    font-size: 0.75rem;
+    color: var(--text);
+    z-index: 999;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 200px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  }
+
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast.success { border-color: rgba(16,185,129,0.5); }
+  .toast.error { border-color: rgba(239,68,68,0.5); }
+
+  /* ─── EMPTY STATE ─── */
+  .empty-state {
+    grid-column: 1/-1;
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--text3);
+    display: none;
+  }
+
+  .empty-state.show { display: block; }
+  .empty-state h3 { font-family: 'Syne', sans-serif; font-size: 1.2rem; margin-bottom: 0.5rem; color: var(--text2); }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 640px) {
+    .sections-grid { grid-template-columns: 1fr; }
+    .header-stats { gap: 0.75rem; }
+    .hstat-val { font-size: 0.9rem; }
+    .progress-pct { font-size: 2rem; }
+    .controls-right { margin-left: 0; width: 100%; }
+  }
+
+  @media (max-width: 480px) {
+    .header-stats .hstat:nth-child(n+4) { display: none; }
+    .hstat-divider:nth-child(n+3) { display: none; }
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text3); }
+
+  /* Section complete glow */
+  .section-card.all-done {
+    border-color: rgba(16,185,129,0.3);
+    box-shadow: 0 0 20px rgba(16,185,129,0.08);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-icon">🚀</div>
+      BizLaunch
+    </div>
+    <div class="header-stats">
+      <div class="hstat">
+        <div class="hstat-val amber" id="h-total">0</div>
+        <div class="hstat-label">Total Items</div>
+      </div>
+      <div class="hstat-divider"></div>
+      <div class="hstat">
+        <div class="hstat-val green" id="h-done">0</div>
+        <div class="hstat-label">Completed</div>
+      </div>
+      <div class="hstat-divider"></div>
+      <div class="hstat">
+        <div class="hstat-val blue" id="h-pending">0</div>
+        <div class="hstat-label">Pending</div>
+      </div>
+      <div class="hstat-divider"></div>
+      <div class="hstat">
+        <div class="hstat-val amber" id="h-pct">0%</div>
+        <div class="hstat-label">Progress</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+<div class="hero">
+  <div class="hero-tag">📋 Business Setup Tracker</div>
+  <h1>Business Infrastructure<br><span>Master Checklist</span></h1>
+  <p class="hero-sub">আপনার অনলাইন ব্যবসা শুরু করার আগে প্রয়োজনীয় সমস্ত আইটেম ট্র্যাক করুন। প্রতিটি আইটেম সম্পন্ন হলে টিক দিন এবং আপনার অগ্রগতি পর্যবেক্ষণ করুন।</p>
+
+  <!-- Progress Card -->
+  <div class="progress-card">
+    <div class="progress-top">
+      <div>
+        <div class="progress-title">Overall Progress</div>
+        <div style="font-size:0.7rem;color:var(--text3);margin-top:0.2rem;">সামগ্রিক অগ্রগতি</div>
+      </div>
+      <div class="progress-pct" id="pct-display">0<span>%</span></div>
+    </div>
+    <div class="progress-bar-track">
+      <div class="progress-bar-fill" id="main-bar" style="width:0%"></div>
+    </div>
+    <div class="progress-counts">
+      <div class="pcount">
+        <div class="pcount-dot green"></div>
+        <strong id="cnt-done">0</strong> Completed
+      </div>
+      <div class="pcount">
+        <div class="pcount-dot amber"></div>
+        <strong id="cnt-pending">0</strong> Pending
+      </div>
+      <div class="pcount">
+        <div class="pcount-dot total"></div>
+        <strong id="cnt-total">0</strong> Total Items
+      </div>
+      <div class="pcount" style="margin-left:auto;">
+        <div class="pcount-dot" style="background:var(--purple)"></div>
+        <strong id="cnt-sections">0</strong> / 24 Sections
+      </div>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <div class="controls">
+    <button class="filter-btn active" data-filter="all">All Items</button>
+    <button class="filter-btn" data-filter="pending">⏳ Pending</button>
+    <button class="filter-btn" data-filter="completed">✅ Completed</button>
+    <div class="controls-right">
+      <button class="btn-action" onclick="checkAll()">✅ Select All</button>
+      <button class="btn-action danger" onclick="resetAll()">🔄 Reset All</button>
+    </div>
+  </div>
+</div>
+
+<div style="padding:0 clamp(1rem,5vw,3rem);max-width:1400px;margin:0 auto;">
+<div class="sections-grid" id="sections-grid">
+  <!-- Generated by JS -->
+</div>
+</div>
+</main>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <span id="toast-icon">✅</span>
+  <span id="toast-msg">Item updated!</span>
+</div>
+
+<script>
+const SECTIONS = [
+  // ════════════════════════════════════════════════════
+  // SECTION 1 — Business Foundation
+  // ════════════════════════════════════════════════════
+  {
+    id: 1, num: "1️⃣", title: "Business Foundation", cat: 1,
+    subSections: [
+      {
+        title: "Brand Identity",
+        items: [
+          "Company Registration","Company Name","Brand Name","Logo Design",
+          "Brand Identity Kit","Brand Guidelines","Brand Colors","Typography",
+          "Brand Story / About Page","Favicon Design","App Icon Design"
+        ]
+      },
+      {
+        title: "Domain & Hosting Setup",
+        items: [
+          "Domain Name","Backup Domain","Mirror Domain","Domain Privacy Protection",
+          "DNS Management","SSL Certificate","Trademark Check",
+          "Business Email System","Official Email Domain Setup",
+          "Business Phone Number","Support Email Setup"
+        ]
+      },
+      {
+        title: "Business Banking & Finance",
+        items: [
+          "Business Bank Account","Merchant Account Setup",
+          "Payment Processor Agreement","Crypto Wallet Setup",
+          "Financial Recordkeeping System","Tax Registration",
+          "Accounting Software Setup"
+        ]
+      }
+    ]
+  },
+
+  // ════════════════════════════════════════════════════
+  // SECTION 2 — Licensing & Regulatory Compliance
+  // ════════════════════════════════════════════════════
+  {
+    id: 2, num: "2️⃣", title: "Licensing & Regulatory Compliance", cat: 2,
+    subSections: [
+      {
+        title: "Gambling License",
+        items: [
+          "Gambling License Selection (Curacao / Malta / Others)",
+          "License Application Submitted","License Obtained",
+          "License Display on Website","Annual License Renewal Plan"
+        ]
+      },
+      {
+        title: "Responsible Gambling Tools",
+        items: [
+          "Age Verification System","Self-Exclusion Tool",
+          "Deposit Limit Setting (User Level)","Session Time Limit Tool",
+          "Cool-Off / Break Period Option","Problem Gambling Resources Page",
+          "Underage Gambling Prevention System"
+        ]
+      },
+      {
+        title: "Geo & Data Compliance",
+        items: [
+          "Geo-Blocking System (Restricted Countries)","IP Restriction System",
+          "GDPR Compliance","Data Retention Policy","Privacy Impact Assessment",
+          "Cookie Consent Banner","Data Breach Response Plan"
+        ]
+      },
+      {
+        title: "Legal Documents",
+        items: [
+          "Terms & Conditions","Privacy Policy","Responsible Gambling Policy",
+          "AML Policy","Anti Fraud Policy","User Verification Policy",
+          "Cookie Policy","Disclaimer Page","Affiliate Terms & Conditions"
+        ]
+      }
+    ]
+  },
+
+  // ════════════════════════════════════════════════════
+  // SECTION 3 — Website Platform
+  // ════════════════════════════════════════════════════
+  {
+    id: 3, num: "3️⃣", title: "Website Platform", cat: 3,
+    subSections: [
+      {
+        title: "Core Platform",
+        items: [
+          "Main Betting Website","Mobile Optimized Website","Progressive Web App (PWA)",
+          "Multi-Language Support","Multi-Currency Support",
+          "Dark / Light Mode","Website Speed Optimization","Core Web Vitals Optimized"
+        ]
+      },
+      {
+        title: "Admin & Dashboard",
+        items: [
+          "Admin Panel","Super Admin Dashboard","User Dashboard",
+          "Agent / Sub-Admin Panel","Reporting Dashboard"
+        ]
+      },
+      {
+        title: "Betting Engine",
+        items: [
+          "Betting Engine","Odds Management System","Live Betting System",
+          "Live Score Feed","Bet Slip System","Bet Settlement System",
+          "Match Result Feed","Multi-Bet / Accumulator System",
+          "Bet Builder Feature","Cash Out Feature"
+        ]
+      },
+      {
+        title: "Games & Entertainment",
+        items: [
+          "Casino Game Section","Virtual Sports Section","Live Casino Section",
+          "Crash Game Section","Mini Games Section","Lottery / Number Game Section"
+        ]
+      }
+    ]
+  },
+
+  // ════════════════════════════════════════════════════
+  // SECTION 4 — Third-Party API Integrations
+  // ════════════════════════════════════════════════════
+  {
+    id: 4, num: "4️⃣", title: "Third-Party API & Provider Integrations", cat: 4,
+    subSections: [
+      {
+        title: "Sports Data Providers",
+        items: [
+          "Sports Data API (Sportradar / Betgenius / SportsRadar)",
+          "Odds Feed Provider","Live Score API","Match Statistics API",
+          "Sports News API"
+        ]
+      },
+      {
+        title: "Game Content Providers",
+        items: [
+          "Casino Game Provider (Pragmatic Play / Evolution / Others)",
+          "Live Casino Provider (Evolution Gaming / Ezugi / Others)",
+          "Virtual Sports Provider","Crash Game Provider",
+          "RNG Certificate for Casino Games"
+        ]
+      },
+      {
+        title: "Other Integrations",
+        items: [
+          "SMS Gateway API","Email Gateway API (SendGrid / Mailgun)",
+          "KYC Verification API (Jumio / Onfido / Others)",
+          "IP Geolocation API","Currency Exchange Rate API",
+          "Analytics Integration (Google / Mixpanel)","Webhook System"
+        ]
+      }
+    ]
+  },
+
+  // ════════════════════════════════════════════════════
+  // SECTION 5 — User Account System
+  // ════════════════════════════════════════════════════
+  {
+    id: 5, num: "5️⃣", title: "User Account System", cat: 5,
+    items: [
+      "User Registration","Email Verification","Phone Verification",
+      "OTP Verification","KYC Verification","Two-Factor Authentication (2FA)",
+      "Social Login (Google / Facebook)","Password Reset System",
+      "User Profile Panel","Account Settings","User Activity Logs",
+      "Session Management","Device Management",
+      "User Messaging System","Wallet Dashboard","Bet History",
+      "Transaction History","Notification Center","Self-Exclusion Option (User Side)"
+    ]
+  },
+
+  // ════════════════════════════════════════════════════
+  // SECTION 6 — Wallet & Finance System
+  // ════════════════════════════════════════════════════
+  {
+    id: 6, num: "6️⃣", title: "Wallet & Finance System", cat: 6,
+    items: [
+      "User Wallet","Deposit System","Withdrawal System","Transaction Log",
+      "Manual Payment System","Automatic Payment Gateway","Crypto Payment Integration",
+      "Payment Approval Panel","Payment Notification System",
+      "Deposit Limit Control","Withdrawal Limit Control",
+      "Chargeback Management System","Revenue Reconciliation System",
+      "Financial Reporting Dashboard","Bonus Wallet (Separate from Main Wallet)",
+      "Rolling Reserve Management"
+    ]
+  },
+
+  // ════════════════════════════════════════════════════
+  // SECTION 7 — Bonus & Promotion System
+  // ════════════════════════════════════════════════════
+  {
+    id: 7, num: "7️⃣", title: "Bonus & Promotion System", cat: 7,
+    items: [
+      "Welcome Bonus","First Deposit Bonus","Reload / Re-Deposit Bonus",
+      "Cashback Bonus","Referral Bonus","Loyalty Program",
+      "VIP Program","Free Bet Campaign","Event Promotion Campaign",
+      "Seasonal Campaigns","Promo Code System","Wagering Requirement System",
+      "Bonus Abuse Detection","Tournament / Competition Campaigns",
+      "Jackpot Promotion System","Birthday Bonus System"
+    ]
+  },
+
+  // ════════════════════════════════════════════════════
+  // SECTION 8 — Affiliate Marketing Infrastructure
+  // ════════════════════════════════════════════════════
+  {
+    id: 8, num: "8️⃣", title: "Affiliate Marketing Infrastructure", cat: 8,
+    items: [
+      "Affiliate Dashboard","Referral Link Generator","Affiliate Tracking System",
+      "Affiliate Commission Model","Revenue Share System","CPA Commission",
+      "Hybrid Commission Model","Affiliate Payment System",
+      "Affiliate Reporting Dashboard","Affiliate Marketing Materials",
+      "Sub-Affiliate System","Affiliate Onboarding Flow",
+      "Affiliate Fraud Detection","Affiliate Newsletter / Communication System"
+    ]
+  },
+
+  // ════════════════════════════════════════════════════
+  // SECTION 9 — Marketing Infrastructure
+  // ════════════════════════════════════════════════════
+  {
+    id: 9, num: "9️⃣", title: "Marketing Infrastructure", cat: 9,
+    subSections: [
+      {
+        title: "Social Media Channels",
+        items: [
+          "Facebook Page","Facebook Business Manager","Facebook Ads Account",
+          "Facebook Pixel Tracking","Telegram Channel","Telegram Betting Tips Channel",
+          "Telegram Support Group","Telegram VIP Channel",
+          "WhatsApp Business","Instagram Page",
+          "Twitter / X Page","TikTok Page","YouTube Channel"
+        ]
+      },
+      {
+        title: "Marketing Automation",
+        items: [
+          "Email Marketing System","Push Notification System",
+          "SMS Marketing System","CRM System",
+          "User Segmentation System","User Retargeting System",
+          "Drip Campaign System","Win-Back Campaign System",
+          "User Lifecycle Automation"
+        ]
+      }
+    ]
+  },
+
+  // ════════════════════════════════════════════════════
+  // SECTION 10 — SEO Infrastructure
+  // ════════════════════════════════════════════════════
+  {
+    id: 10, num: "🔟", title: "SEO Infrastructure", cat: 10,
+    subSections: [
+      {
+        title: "SEO Strategy",
+        items: [
+          "Keyword Research","Competitor Analysis","On Page SEO","Technical SEO",
+          "Sitemap","Robots.txt","Backlink Strategy","Internal Linking Structure",
+          "SEO Blog System","Betting Tips Blog","Match Prediction Content",
+          "SEO Landing Pages","Schema Markup / Structured Data",
+          "Core Web Vitals Optimization","Local SEO (if applicable)"
+        ]
+      },
+      {
+        title: "SEO Tools",
+        items: [
+          "Google Search Console","Google Analytics","Ahrefs","SEMrush"
+        ]
+      }
+    ]
+  },
+
+  // ════════════════════════════════════════════════════
+  // SECTION 11 — Paid Advertising Infrastructure
+  // ════════════════════════════════════════════════════
+  {
+    id: 11, num: "11", title: "Paid Advertising Infrastructure", cat: 11,
+    items: [
+      "Facebook Ads Manager","Google Ads","Native Ads (Taboola / Outbrain)",
+      "Conversion Tracking","Landing Page Funnel","A/B Testing System",
+      "Retargeting Ads","Lookalike Audience Setup","Ad Creative Library",
+      "Ad Performance Dashboard","Campaign Analytics Dashboard",
+      "Ad Spend Budget Plan","Ad Account Backup (Multiple Accounts)"
+    ]
+  },
+
+  // ════════════════════════════════════════════════════
+  // SECTION 12 — Traffic Acquisition Channels
+  // ════════════════════════════════════════════════════
+  {
+    id: 12, num: "12", title: "Traffic Acquisition Channels", cat: 12,
+    items: [
+      "Facebook Marketing","Facebook Group Marketing","Telegram Promotion",
+      "Influencer Marketing","SEO Organic Traffic","Paid Ads Traffic",
+      "Affiliate Traffic","YouTube Marketing","TikTok Marketing",
+      "Email Marketing Traffic","Push Notification Traffic",
+      "SMS Campaign Traffic","Partnership / Cross-Promotion Traffic"
+    ]
+  },
+
+  // ════════════════════════════════════════════════════
+  // SECTION 13 — Customer Support Infrastructure
+  // ════════════════════════════════════════════════════
+  {
+    id: 13, num: "13", title: "Customer Support Infrastructure", cat: 13,
+    items: [
+      "Live Chat System","Telegram Support","WhatsApp Support","Email Support",
+      "Ticket System","FAQ Page","Knowledge Base","Support Dashboard",
+      "24/7 Support Coverage Plan","Support SLA Definition",
+      "Escalation Procedure","Multi-Language Support (for CS)",
+      "AI Chatbot for First Response","Support Performance Tracking"
+    ]
+  },
+
+  // ════════════════════════════════════════════════════
+  // SECTION 14 — Security System
+  // ════════════════════════════════════════════════════
+  {
+    id: 14, num: "14", title: "Security System", cat: 14,
+    items: [
+      "DDoS Protection","Anti Bot Protection","VPN Detection",
+      "Multiple Account Detection","Fraud Detection","Payment Fraud Detection",
+      "Account Security Monitoring","Login Security System","Website Firewall",
+      "Two-Factor Authentication (Admin)","IP Blocking System",
+      "Suspicious Activity Alerts","Penetration Testing",
+      "SSL / TLS Configuration","Data Encryption at Rest",
+      "Admin Access Log Monitoring"
+    ]
+  },
+
+  // ════════════════════════════════════════════════════
+  // SECTION 15 — Risk Management System
+  // ════════════════════════════════════════════════════
+  {
+    id: 15, num: "15", title: "Risk Management System", cat: 15,
+    items: [
+      "Betting Limit System (Min / Max per Bet)",
+      "Daily / Weekly Betting Limit (Platform Level)",
+      "Liability Management Dashboard","Odds Compilation & Review Process",
+      "Risk Exposure Dashboard","Suspicious Betting Pattern Detection",
+      "High-Risk Player Flagging System","Manual Bet Review Panel",
+      "Arbitrage Bettor Detection","Bet Void / Correction System",
+      "Real-Time Risk Alert System","Risk Management Policy Document"
+    ]
+  },
+
+  // ════════════════════════════════════════════════════
+  // SECTION 16 — Server Infrastructure
+  // ════════════════════════════════════════════════════
+  {
+    id: 16, num: "16", title: "Server Infrastructure", cat: 16,
+    items: [
+      "VPS / Dedicated Server","Backup Server","CDN Setup","Load Balancer",
+      "Auto Backup System","Server Monitoring","Server Firewall",
+      "Uptime Monitoring (99.9% SLA)","Disaster Recovery Plan",
+      "Auto Scaling System","Database Clustering","Dev / Staging Environment",
+      "Production Environment Separation","Server Log Management"
+    ]
+  },
+
+  // ════════════════════════════════════════════════════
+  // SECTION 17 — Analytics & Tracking
+  // ════════════════════════════════════════════════════
+  {
+    id: 17, num: "17", title: "Analytics & Tracking", cat: 17,
+    items: [
+      "Traffic Analytics","User Registration Tracking","Deposit Tracking",
+      "Withdrawal Tracking","Conversion Tracking","Marketing ROI Tracking",
+      "Affiliate Performance Dashboard","Revenue Dashboard",
+      "Funnel Analytics (Registration → Deposit → Bet)",
+      "Cohort Analysis System","LTV (Lifetime Value) Tracking",
+      "Churn Rate Monitoring","ARPU (Avg Revenue Per User) Dashboard",
+      "Heatmap & Session Recording","Real-Time Dashboard (Live KPIs)"
+    ]
+  },
+
+  // ════════════════════════════════════════════════════
+  // SECTION 18 — Pre-Launch Testing & QA
+  // ════════════════════════════════════════════════════
+  {
+    id: 18, num: "18", title: "Pre-Launch Testing & QA", cat: 18,
+    items: [
+      "Website Functional Testing","Mobile Compatibility Testing",
+      "Cross-Browser Testing","Load / Stress Testing",
+      "Payment Flow Testing (Deposit & Withdrawal)",
+      "Bet Placement & Settlement Testing","Bonus Trigger Testing",
+      "Security Penetration Testing","KYC Flow Testing",
+      "Admin Panel Testing","API Integration Testing",
+      "Bug Tracking System (Jira / Trello)","User Acceptance Testing (UAT)",
+      "Soft Launch / Beta Testing","Rollback Plan Prepared"
+    ]
+  },
+
+  // ════════════════════════════════════════════════════
+  // SECTION 19 — Operations Team
+  // ════════════════════════════════════════════════════
+  {
+    id: 19, num: "19", title: "Operations Team", cat: 19,
+    items: [
+      "CEO / Business Owner","CTO / Tech Lead","Marketing Manager",
+      "Affiliate Manager","Social Media Manager","SEO Specialist",
+      "Customer Support Team (Min 2-3 agents)","Payment Manager",
+      "Risk Manager","Fraud Analyst","Odds Compiler / Trader",
+      "Graphic Designer","Video Editor","Content Writer","Developer (On-call)"
+    ]
+  },
+
+  // ════════════════════════════════════════════════════
+  // SECTION 20 — Internal Operations Tools
+  // ════════════════════════════════════════════════════
+  {
+    id: 20, num: "20", title: "Internal Operations & Team Tools", cat: 20,
+    subSections: [
+      {
+        title: "Project & Task Management",
+        items: [
+          "Project Management Tool (Trello / Asana / Notion)",
+          "Bug Tracking Tool (Jira)","Team Communication (Slack / Discord)",
+          "Video Conferencing (Zoom / Google Meet)",
+          "Document Collaboration (Google Drive / Notion)",
+          "Internal Wiki / SOP Documentation"
+        ]
+      },
+      {
+        title: "HR & Admin",
+        items: [
+          "Employee / Contractor Agreements","NDA Agreements",
+          "Payroll System","Remote Work Policy",
+          "Onboarding Process for New Hires",
+          "Performance Review System"
+        ]
+      }
+    ]
+  },
+
+  // ════════════════════════════════════════════════════
+  // SECTION 21 — Marketing Assets
+  // ════════════════════════════════════════════════════
+  {
+    id: 21, num: "21", title: "Marketing Assets", cat: 21,
+    items: [
+      "Promo Banner Pack","Social Media Banner Pack","Social Media Branding Kit",
+      "Banner Templates","Video Ads","Video Promo Templates",
+      "Promotional Graphics","Betting Promo Posters",
+      "Landing Page Templates","Affiliate Promo Materials",
+      "Email Newsletter Templates","Push Notification Templates",
+      "App Store / Play Store Screenshots"
+    ]
+  },
+
+  // ════════════════════════════════════════════════════
+  // SECTION 22 — Content Marketing
+  // ════════════════════════════════════════════════════
+  {
+    id: 22, num: "22", title: "Content Marketing", cat: 22,
+    items: [
+      "Betting Tutorials","Sports Analysis Articles","Match Prediction Posts",
+      "Betting Strategy Guides","YouTube Betting Videos",
+      "Social Media Content Calendar","Odds Analysis Content","Sports News Blog",
+      "How-To Guides (Registration / Deposit / Withdrawal)",
+      "Video Explainers (How Betting Works)","Infographic Content",
+      "Live Commentary / Updates"
+    ]
+  },
+
+  // ════════════════════════════════════════════════════
+  // SECTION 23 — Community Building
+  // ════════════════════════════════════════════════════
+  {
+    id: 23, num: "23", title: "Community Building", cat: 23,
+    items: [
+      "Facebook Sports Groups","Telegram Betting Groups",
+      "Discord Community","VIP Betting Community",
+      "Prediction Contest System","Leaderboard System","Referral Contest",
+      "Weekly Giveaway / Competition","Community Moderators Assigned",
+      "Community Engagement Calendar"
+    ]
+  },
+
+  // ════════════════════════════════════════════════════
+  // SECTION 24 — Business Strategy & KPIs
+  // ════════════════════════════════════════════════════
+  {
+    id: 24, num: "24", title: "Business Strategy & KPIs", cat: 24,
+    items: [
+      "Target Country / Market Selected","Competitor Analysis Done",
+      "Business Model Defined (B2C / B2B / White Label)",
+      "Marketing Budget Plan","User Acquisition Strategy",
+      "Retention Strategy","Affiliate Growth Strategy",
+      "Long-Term Growth Plan (1yr / 3yr)","Monthly KPI Dashboard",
+      "Break-Even Analysis","Revenue Forecast Model",
+      "Exit Strategy (Optional)","Investor Pitch Deck (if needed)"
+    ]
+  }
+];
+
+// ─── State ───
+let state = {};
+let currentFilter = 'all';
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem('bizChecklist');
+    if (saved) state = JSON.parse(saved);
+  } catch(e) { state = {}; }
+}
+
+function saveState() {
+  try { localStorage.setItem('bizChecklist', JSON.stringify(state)); } catch(e) {}
+}
+
+// ─── Build HTML ───
+function buildSections() {
+  const grid = document.getElementById('sections-grid');
+  grid.innerHTML = '';
+
+  SECTIONS.forEach((sec, i) => {
+    const card = document.createElement('div');
+    card.className = `section-card cat-${sec.cat}`;
+    card.dataset.secId = sec.id;
+    card.style.animationDelay = (i * 0.04) + 's';
+
+    // Collect all items
+    const allItems = sec.items || [];
+    if (sec.subSections) sec.subSections.forEach(ss => ss.items.forEach(it => allItems.push(it)));
+    // But we need original structure, so let's track per item key
+    const allKeys = getAllKeys(sec);
+    const doneCount = allKeys.filter(k => state[k]).length;
+    const total = allKeys.length;
+    const pct = total ? Math.round(doneCount/total*100) : 0;
+
+    card.innerHTML = `
+      <div class="section-header" onclick="toggleSection(${sec.id})">
+        <div class="section-number">${sec.num}</div>
+        <div class="section-info">
+          <div class="section-title">${sec.title}</div>
+          <div class="section-progress-mini">
+            <div class="mini-bar"><div class="mini-bar-fill" id="mini-${sec.id}" style="width:${pct}%"></div></div>
+            <div class="section-count-badge" id="badge-${sec.id}">${doneCount}/${total}</div>
+          </div>
+        </div>
+        <div class="section-toggle">▾</div>
+      </div>
+      <div class="item-list" id="list-${sec.id}">
+        ${buildItems(sec)}
+      </div>
+    `;
+    grid.appendChild(card);
+    updateSectionDone(sec.id);
+  });
+
+  updateGlobal();
+}
+
+function buildItems(sec) {
+  let html = '';
+  if (sec.items) {
+    html += sec.items.map(item => buildItem(item, sec.id)).join('');
+  }
+  if (sec.subSections) {
+    sec.subSections.forEach(ss => {
+      html += `<div class="sub-section-header">${ss.title}</div>`;
+      html += ss.items.map(item => buildItem(item, sec.id)).join('');
+    });
+  }
+  return html;
+}
+
+function buildItem(label, secId) {
+  const key = `${secId}__${label}`;
+  const done = !!state[key];
+  return `
+    <div class="item ${done ? 'completed' : ''}" data-key="${key}" onclick="toggleItem(this)">
+      <div class="item-check">
+        <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+          <path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="item-label">${label}</div>
+      <div class="item-badge">${done ? '✓ Done' : '○ Pending'}</div>
+    </div>
+  `;
+}
+
+function getAllKeys(sec) {
+  const keys = [];
+  if (sec.items) sec.items.forEach(it => keys.push(`${sec.id}__${it}`));
+  if (sec.subSections) sec.subSections.forEach(ss => ss.items.forEach(it => keys.push(`${sec.id}__${it}`)));
+  return keys;
+}
+
+// ─── Toggle Item ───
+function toggleItem(el) {
+  const key = el.dataset.key;
+  const wasDone = el.classList.contains('completed');
+  state[key] = !wasDone;
+  saveState();
+
+  el.classList.toggle('completed', !wasDone);
+  const badge = el.querySelector('.item-badge');
+  badge.textContent = !wasDone ? '✓ Done' : '○ Pending';
+
+  const secId = parseInt(key.split('__')[0]);
+  updateSectionDone(secId);
+  updateGlobal();
+  applyFilter(currentFilter);
+
+  showToast(!wasDone ? '✅' : '○', !wasDone ? 'Completed!' : 'Marked Pending');
+}
+
+// ─── Toggle Section collapse ───
+function toggleSection(id) {
+  const card = document.querySelector(`[data-sec-id="${id}"]`);
+  card.classList.toggle('collapsed');
+}
+
+// ─── Update Section Badge ───
+function updateSectionDone(secId) {
+  const sec = SECTIONS.find(s => s.id === secId);
+  const keys = getAllKeys(sec);
+  const done = keys.filter(k => state[k]).length;
+  const total = keys.length;
+  const pct = total ? done/total*100 : 0;
+
+  const miniBar = document.getElementById(`mini-${secId}`);
+  const badge = document.getElementById(`badge-${secId}`);
+  const card = document.querySelector(`[data-sec-id="${secId}"]`);
+
+  if (miniBar) miniBar.style.width = pct + '%';
+  if (badge) badge.textContent = `${done}/${total}`;
+  if (card) card.classList.toggle('all-done', done === total && total > 0);
+}
+
+// ─── Update Global Progress ───
+function updateGlobal() {
+  let totalItems = 0, doneItems = 0, sectionsDone = 0;
+
+  SECTIONS.forEach(sec => {
+    const keys = getAllKeys(sec);
+    const done = keys.filter(k => state[k]).length;
+    totalItems += keys.length;
+    doneItems += done;
+    if (done === keys.length && keys.length > 0) sectionsDone++;
+  });
+
+  const pct = totalItems ? Math.round(doneItems/totalItems*100) : 0;
+  const pending = totalItems - doneItems;
+
+  document.getElementById('main-bar').style.width = pct + '%';
+  document.getElementById('pct-display').innerHTML = `${pct}<span>%</span>`;
+  document.getElementById('cnt-done').textContent = doneItems;
+  document.getElementById('cnt-pending').textContent = pending;
+  document.getElementById('cnt-total').textContent = totalItems;
+  document.getElementById('cnt-sections').textContent = sectionsDone;
+
+  document.getElementById('h-total').textContent = totalItems;
+  document.getElementById('h-done').textContent = doneItems;
+  document.getElementById('h-pending').textContent = pending;
+  document.getElementById('h-pct').textContent = pct + '%';
+}
+
+// ─── Filter ───
+function applyFilter(filter) {
+  currentFilter = filter;
+  document.querySelectorAll('.filter-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.filter === filter);
+  });
+
+  document.querySelectorAll('.item').forEach(item => {
+    if (filter === 'all') {
+      item.classList.remove('hidden');
+    } else if (filter === 'completed') {
+      item.classList.toggle('hidden', !item.classList.contains('completed'));
+    } else {
+      item.classList.toggle('hidden', item.classList.contains('completed'));
+    }
+  });
+
+  // Show/hide sub-section headers based on visible items
+  document.querySelectorAll('.sub-section-header').forEach(header => {
+    let next = header.nextElementSibling;
+    let hasVisible = false;
+    while (next && !next.classList.contains('sub-section-header')) {
+      if (!next.classList.contains('hidden')) { hasVisible = true; break; }
+      next = next.nextElementSibling;
+    }
+    header.style.display = hasVisible ? '' : 'none';
+  });
+}
+
+// ─── Bulk Actions ───
+function checkAll() {
+  SECTIONS.forEach(sec => {
+    getAllKeys(sec).forEach(k => state[k] = true);
+  });
+  saveState();
+  buildSections();
+  applyFilter(currentFilter);
+  showToast('✅', 'All items completed!');
+}
+
+function resetAll() {
+  if (!confirm('সব items রিসেট করবেন?')) return;
+  state = {};
+  saveState();
+  buildSections();
+  applyFilter(currentFilter);
+  showToast('🔄', 'All items reset!');
+}
+
+// ─── Toast ───
+let toastTimer;
+function showToast(icon, msg) {
+  const toast = document.getElementById('toast');
+  document.getElementById('toast-icon').textContent = icon;
+  document.getElementById('toast-msg').textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 1800);
+}
+
+// ─── Filter buttons ───
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => applyFilter(btn.dataset.filter));
+});
+
+// ─── Init ───
+loadState();
+buildSections();
+applyFilter('all');
+</script>
+</body>
+</html>
